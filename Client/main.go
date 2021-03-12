@@ -24,7 +24,12 @@ func failOnError(err error, msg string) {
 func newElement(w http.ResponseWriter, r *http.Request) {
 	// Adding headers
 	w.Header().Set("Content-Type", "application/json")
-
+	if r.Method == "GET" {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("{\"message\": \"ok\"}"))
+		return;
+	}
+	
 	// Parsing body
 	var body map[string]interface{}
 	err := json.NewDecoder(r.Body).Decode(&body)
