@@ -8,4 +8,4 @@ RUN go mod download
 
 EXPOSE 4000
 
-CMD ["go", "run", "receive.go"]
+CMD ["go", "run", "main.go"]
