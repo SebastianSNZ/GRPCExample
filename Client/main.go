@@ -39,20 +39,23 @@ func newElement(w http.ResponseWriter, r *http.Request) {
 
 	newData := string(data)
 
+	// Server Connection
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	failOnError(err, "GRPC Connection")
 	defer conn.Close()
 
+	// Adding new client
 	cli := pb.NewGreeterClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+	// Sending data
 	re, err := cli.SayHello(ctx, &pb.HelloRequest{Name: string(data)})
 	if err != nil {
 		failOnError(err, "Error al enviar el mensaje")
 	}
-	log.Print("Enviado")
-	log.Printf("respuesta : %s", re.GetMessage())
+	log.Print("Sent:")
+	log.Printf("Response : %s", re.GetMessage())
 
 	// Setting status and send response
 	w.WriteHeader(http.StatusCreated)
