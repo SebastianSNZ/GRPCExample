@@ -26,7 +26,7 @@ func newElement(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method == "GET" {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{\"message\": \"ok\"}"))
+		w.Write([]byte("{\"message\": \"ok gRPC\"}"))
 		return;
 	}
 	
@@ -37,7 +37,6 @@ func newElement(w http.ResponseWriter, r *http.Request) {
 	body["way"] = "GRPC"
 	data, err := json.Marshal(body)
 
-	newData := string(data)
 
 	// Server Connection
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
@@ -51,15 +50,13 @@ func newElement(w http.ResponseWriter, r *http.Request) {
 
 	// Sending data
 	re, err := cli.SayHello(ctx, &pb.HelloRequest{Name: string(data)})
-	if err != nil {
-		failOnError(err, "Error al enviar el mensaje")
-	}
+	failOnError(err, "Error al enviar el mensaje")
 	log.Print("Sent:")
 	log.Printf("Response : %s", re.GetMessage())
 
 	// Setting status and send response
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(newData))
+	w.Write([]byte(re.GetMessage()))
 }
 
 func handleRequests() {

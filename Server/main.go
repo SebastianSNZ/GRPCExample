@@ -43,7 +43,7 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	sb := string(newBody)
 	log.Printf(sb)
 
-	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
+	return &pb.HelloReply{Message: sb}, nil
 }
 
 func main() {
